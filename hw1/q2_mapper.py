@@ -17,5 +17,5 @@ for line in sys.stdin:
     words = line.split()
     if len(words) < 1:
         continue
-    for word in set(words):  # Emit each word once per doc
+    for word in set(words):  # Emit each word once per line
         print(f"{word}\t{filename}")
