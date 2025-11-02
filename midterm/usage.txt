@@ -5,3 +5,12 @@
   -reducer "python reducer.py" \
   -file mapper.py \
   -file reducer.py
+
+ mapred streaming \
+    -input /user/$USER/mid-out \
+    -output /user/$USER/mid-out-final \
+    -mapper "cat" \
+    -reducer "python reducer_stage2.py" \
+    -file reducer_stage2.py
+
+hdfs dfs -cat /user/$USER/mid-out-final/part-* | head -n 200

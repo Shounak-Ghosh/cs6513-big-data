@@ -1,32 +1,45 @@
 #!/usr/bin/env python3
 import sys
-from collections import defaultdict
 
-word_counts = defaultdict(int)
-length_counts = defaultdict(int)
-total_words = 0
+current_word = None
+current_count = 0
+current_length = None
+length_count = 0
+
+word_mode = False
+length_mode = False
 
 for line in sys.stdin:
     key, value = line.strip().split('\t', 1)
-    
+
     if key == "WORD":
-        word_counts[value] += 1
-        total_words += 1
+        word_mode = True
+        length_mode = False
+        word = value
+
+        if current_word == word:
+            current_count += 1
+        else:
+            if current_word:
+                print(f"WORD\t{current_word}\t{current_count}")
+            current_word = word
+            current_count = 1
+
     elif key == "LENGTH":
-        length_counts[int(value)] += 1
+        word_mode = False
+        length_mode = True
+        length = value
 
-# Compute statistics
-unique_words = len(word_counts)
+        if current_length == length:
+            length_count += 1
+        else:
+            if current_length:
+                print(f"LENGTH\t{current_length}\t{length_count}")
+            current_length = length
+            length_count = 1
 
-# Print results
-print("Word Frequencies (Top 20):")
-for word, count in sorted(word_counts.items(), key=lambda x: x[1], reverse=True)[:20]:
-    print(f"{word}: {count}")
-
-print("\nWord Length Distribution:")
-for length, count in sorted(length_counts.items()):
-    print(f"length_{length}: {count}")
-
-print("\nStatistics:")
-print(f"Total words: {total_words}")
-print(f"Unique words: {unique_words}")
+# Emit last keys
+if current_word:
+    print(f"WORD\t{current_word}\t{current_count}")
+if current_length:
+    print(f"LENGTH\t{current_length}\t{length_count}")
