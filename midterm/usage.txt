@@ -1,0 +1,7 @@
+ mapred streaming \
+  -input /user/$USER/plato.txt \
+  -output /user/$USER/mid-out \
+  -mapper "python mapper.py" \
+  -reducer "python reducer.py" \
+  -file mapper.py \
+  -file reducer.py
